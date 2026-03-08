@@ -10,6 +10,7 @@ the Fake Review Detection system. It handles:
 Author: FY Project Team
 """
 
+import os
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -74,10 +75,19 @@ app = FastAPI(
 )
 
 # Configure CORS for frontend communication
-# This allows the React frontend to communicate with the backend
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://fy-amazon-fake-reviews.vercel.app",  # Vercel production URL (no trailing slash)
+]
+
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url:
+    allowed_origins.append(frontend_url.rstrip("/"))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://fy-amazon-fake-reviews.vercel.app/"],  # Vite default ports
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -88,6 +98,7 @@ app.include_router(api_router, prefix="/api")
 
 
 @app.get("/")
+@app.head("/")  # Render health check sends HEAD requests
 async def root():
     """
     Health check endpoint.
