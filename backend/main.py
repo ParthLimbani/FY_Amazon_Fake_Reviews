@@ -77,7 +77,7 @@ app = FastAPI(
 # This allows the React frontend to communicate with the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Vite default ports
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://fy-amazon-fake-reviews.vercel.app/"],  # Vite default ports
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
